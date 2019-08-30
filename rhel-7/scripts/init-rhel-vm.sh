@@ -2,6 +2,31 @@
 
 source rhel-7/scripts/spawn.conf
 
+# Check for prerequisites
+
+# Create an SSH key for root if one does not already exist
+
+if [ ! -f /root/.ssh/id_rsa ]; then
+	ssh-keygen -t rsa -b 2048 -N "" -f /root/.ssh/id_rsa
+fi
+
+# If an SSH key exists for this VM (from a previous deploy) remove it
+
+if [ -f /root/.ssh/known_hosts ]; then
+	ssh-keygen -R ${NAME}
+	ssh-keygen -R 192.168.122.${1}
+fi
+
+# Check for needed packages
+
+if [ ! -f /usr/bin/virt-customize ]; then
+	yum -y install libguestfs-tools-c
+fi
+
+if [ ! -f /usr/bin/virt-install ]; then
+	yum -y install virt-install
+fi
+
 qemu-img create -f qcow2 /var/lib/libvirt/images/rhel-${1}.qcow2 ${DISK_SIZE}
 virt-resize --expand /dev/sda1 ${TEMPLATE} ${DISK}
 
@@ -18,6 +43,8 @@ DNS1="${NETWORK}.254"
 EOF
 
 export LIBGUESTFS_BACKEND=direct
+
+
 
 virt-customize -a ${DISK} \
 --root-password password:redhat \
@@ -47,16 +74,11 @@ virsh define --file /tmp/rhel75.xml && rm /tmp/rhel75.xml
 
 virsh start ${NAME}
 
-echo -n "Waiting for ${NAME} to become available."
-for i in {1..30}; do
-  sleep .5 && echo -n "."
-done
-echo ""
-
-if [ -f /root/.ssh/known_hosts ]; then 
-	ssh-keygen -R ${NAME}
-	ssh-keygen -R 192.168.122.${1}
-fi
+# echo -n "Waiting for ${NAME} to become available."
+# for i in {1..30}; do
+#   sleep .5 && echo -n "."
+# done
+# echo ""
 
 # cd ${ANSIBLE_PATH}
 # ansible-playbook --ask-vault-pass register-system.yml --limit ${NAME}

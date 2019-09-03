@@ -12,10 +12,14 @@ fi
 
 # If an SSH key exists for this VM (from a previous deploy) remove it
 
+echo -e "## Cleaning up known_hosts ##\n"
+
 if [ -f /root/.ssh/known_hosts ]; then
 	ssh-keygen -R ${NAME}
-	ssh-keygen -R 192.168.122.${1}
+	ssh-keygen -R ${NETWORK}.${1}
 fi
+
+echo -e "\n"
 
 # Check for needed packages
 
@@ -27,7 +31,19 @@ if [ ! -f /usr/bin/virt-install ]; then
 	yum -y install virt-install
 fi
 
-qemu-img create -f qcow2 /var/lib/libvirt/images/rhel-${1}.qcow2 ${DISK_SIZE}
+echo -n "Checking for template: "
+
+if [ ! -f ${TEMPLATE} ]; then
+	echo -e "\E[0;31m${TEMPLATE} not found!\E[0m"
+	echo -e "You can change the path and image for the desired template in rhel-7/scripts/spawn.conf.\n"
+	exit 1
+else
+	echo -e "\E[0;32mFound!\E[0m\n"
+
+fi
+
+
+qemu-img create -f qcow2 ${DISK} ${DISK_SIZE}
 virt-resize --expand /dev/sda1 ${TEMPLATE} ${DISK}
 
 cat > /tmp/ifcfg-eth0 << EOF
@@ -43,8 +59,6 @@ DNS1="${NETWORK}.254"
 EOF
 
 export LIBGUESTFS_BACKEND=direct
-
-
 
 virt-customize -a ${DISK} \
 --root-password password:redhat \

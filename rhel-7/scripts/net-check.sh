@@ -1,5 +1,7 @@
 source rhel-7/scripts/spawn.conf
 
+echo -e "\n## Checking for network ##\n"
+
 if virsh net-list --all | grep ${NETWORK_NAME} ; then
 
 	echo "${NETWORK_NAME} exists."
@@ -37,3 +39,4 @@ if [ -f /tmp/${NETWORK_NAME}.xml ]; then
 rm /tmp/${NETWORK_NAME}.xml
 fi
 
+echo -e "\n"

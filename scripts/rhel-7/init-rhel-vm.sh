@@ -35,7 +35,7 @@ echo -n "Checking for template: "
 
 if [ ! -f ${TEMPLATE} ]; then
 	echo -e "\E[0;31m${TEMPLATE} not found!\E[0m"
-	echo -e "You can change the path and image for the desired template in rhel-7/scripts/spawn.conf.\n"
+	echo -e "You can change the path and image for the desired template in scripts/rhel-7/spawn.conf.\n"
 	exit 1
 else
 	echo -e "\E[0;32mFound!\E[0m\n"

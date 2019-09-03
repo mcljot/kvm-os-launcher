@@ -62,7 +62,7 @@ export LIBGUESTFS_BACKEND=direct
 
 virt-customize -a ${DISK} \
 --root-password password:redhat \
---hostname rhel-${1}.default.local \
+--hostname ${NAME}.${NETWORK_NAME}.local \
 --edit /etc/ssh/sshd_config:s/PasswordAuthentication\ no/PasswordAuthentication\ yes/g \
 --copy-in /tmp/ifcfg-eth0:/etc/sysconfig/network-scripts \
 --ssh-inject root \

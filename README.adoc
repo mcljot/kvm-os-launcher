@@ -1,0 +1,29 @@
+= KVM OS Launcher
+
+version 0.1
+
+.Prerequisites
+
+. The virtualization package group is installed
+. A KVM OS image is downloaded and ready for use
+. You have reviewed and modified spawn.conf for your needs
++
+* The `TEMPLATE` variable needs to be set for the path and specific image that you've downloaded
+* The `NETWORK` variable is the first three octets of a network address, and should not conflict with an existing KVM network
+* The variables `VCPUS`, `MEMORY`, and `DISK`, should be sized appropriately for your environment 
+
+.Procedure
+
+. Run the executable, with root privileges, followed by an integer (1 - 239 inclusive). For example:
++
+----
+[rheslop@rsys kvm-os-launcher]$ sudo ./spawn-rhel-7.py 5
+----
+
+Note the following:
+
+* The root's SSH key will be copied into the VM for passwordless access
+* For all other users, the default password is 'redhat'.
+* The IP address will be the first three octets as specified by the `NETWORK` variable. The last octet is specified by the provided integer.
+* The hostname will be the VM image OS version (for example rhel-7) followed by the IP's last octet.
+* The domain name will be set to the value of the `NETWORK_NAME` variable, plus '.local'.

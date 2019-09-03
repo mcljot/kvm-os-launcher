@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source rhel-7/scripts/spawn.conf
+source scripts/rhel-7/spawn.conf
 
 # Check for prerequisites
 

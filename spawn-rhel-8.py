@@ -2,7 +2,7 @@
 
 import os, sys
 
-env_path = "./scripts/rhel-7"
+env_path = "./scripts/rhel-8"
 
 if not os.geteuid() == 0:
     print ("\nYou must be root to run this script.\n")

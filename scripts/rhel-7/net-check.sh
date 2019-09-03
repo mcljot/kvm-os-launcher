@@ -1,4 +1,4 @@
-source rhel-7/scripts/spawn.conf
+source scripts/rhel-7/spawn.conf
 
 echo -e "\n## Checking for network ##\n"
 

@@ -17,7 +17,7 @@ if len(sys.argv) == 2:
     if clientNumber >= 1 and clientNumber <= 239:
         checkNet = ("%s/net-check.sh") % (env_path)
         createVM = ("%s/init-rhel-vm.sh %d") % (env_path, clientNumber)
-	os.system(checkNet)
+        os.system(checkNet)
         os.system(createVM)
 
     else:

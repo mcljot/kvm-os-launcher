@@ -2,7 +2,7 @@
 
 import os, sys
 
-env_path = "./scripts/rhel-8"
+env_path = "./scripts/fedora"
 
 if not os.geteuid() == 0:
     print ("\nYou must be root to run this script.\n")
@@ -16,7 +16,7 @@ if len(sys.argv) == 2:
         sys.exit(4)
     if clientNumber >= 1 and clientNumber <= 239:
         checkNet = ("%s/net-check.sh") % (env_path)
-        createVM = ("%s/init-rhel-vm.sh %d") % (env_path, clientNumber)
+        createVM = ("%s/init-fedora-vm.sh %d") % (env_path, clientNumber)
         os.system(checkNet)
         os.system(createVM)
 

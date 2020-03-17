@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source scripts/rhel-8/spawn.conf
+source scripts/undercloud-rhel-8/spawn.conf
 
 # Check for prerequisites
 
@@ -35,13 +35,12 @@ echo -n "Checking for template: "
 
 if [ ! -f ${TEMPLATE} ]; then
 	echo -e "\E[0;31m${TEMPLATE} not found!\E[0m"
-	echo -e "You can change the path and image for the desired template in scripts/rhel-8/spawn.conf.\n"
+	echo -e "You can change the path and image for the desired template in scripts/undercloud-rhel-8/spawn.conf.\n"
 	exit 1
 else
 	echo -e "\E[0;32mFound!\E[0m\n"
 
 fi
-
 
 qemu-img create -f qcow2 ${DISK} ${DISK_SIZE}
 virt-resize --expand /dev/sda1 ${TEMPLATE} ${DISK}
@@ -58,6 +57,18 @@ GATEWAY="${NETWORK}.254"
 DNS1="${NETWORK}.254"
 EOF
 
+cat > /tmp/ifcfg-eth1 << EOF
+DEVICE="eth1"
+BOOTPROTO="none"
+ONBOOT="yes"
+TYPE="Ethernet"
+USERCTL="yes"
+IPADDR="${NETWORK_2}.${1}"
+NETMASK="255.255.255.0"
+GATEWAY="${NETWORK_2}.254"
+DNS1="${NETWORK_2}.254"
+EOF
+
 export LIBGUESTFS_BACKEND=direct
 
 virt-customize -a ${DISK} \
@@ -65,23 +76,41 @@ virt-customize -a ${DISK} \
 --hostname ${NAME}.${NETWORK_NAME}.local \
 --edit /etc/ssh/sshd_config:s/PasswordAuthentication\ no/PasswordAuthentication\ yes/g \
 --copy-in /tmp/ifcfg-eth0:/etc/sysconfig/network-scripts \
+--copy-in /tmp/ifcfg-eth1:/etc/sysconfig/network-scripts \
 --ssh-inject root \
 --run-command '/usr/bin/yum -y remove cloud-init' \
 --run-command 'echo "UseDNS no" >> /etc/ssh/sshd_config' \
 --run-command 'echo "nameserver 8.8.8.8" >> /etc/resolv.conf' \
 --selinux-relabel && rm /tmp/ifcfg-eth0
 
+if virsh net-list | grep ${NETWORK_NAME_2}; then
+
 /usr/bin/virt-install \
 --disk path=${DISK} \
 --import \
 --vcpus ${VCPUS} \
 --network network=${NETWORK_NAME} \
---network bridge=vm-br0 \
+--network network=${NETWORK_NAME_2},model=e1000 \
 --name ${NAME} \
 --ram ${MEMORY} \
 --os-type=linux \
 --os-variant=rhel7.5 \
 --dry-run --print-xml > /tmp/rhel75.xml
+
+else
+
+/usr/bin/virt-install \
+--disk path=${DISK} \
+--import \
+--vcpus ${VCPUS} \
+--network network=${NETWORK_NAME} \
+--name ${NAME} \
+--ram ${MEMORY} \
+--os-type=linux \
+--os-variant=rhel7.5 \
+--dry-run --print-xml > /tmp/rhel75.xml
+
+fi
 
 virsh define --file /tmp/rhel75.xml && rm /tmp/rhel75.xml
 

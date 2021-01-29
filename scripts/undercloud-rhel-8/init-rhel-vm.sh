@@ -48,7 +48,7 @@ else
 fi
 
 qemu-img create -f qcow2 ${DISK} ${DISK_SIZE}
-virt-resize --expand /dev/sda1 ${TEMPLATE} ${DISK}
+virt-resize --expand /dev/vda3 ${TEMPLATE} ${DISK}
 
 cat > /tmp/ifcfg-eth0 << EOF
 DEVICE="eth0"

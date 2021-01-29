@@ -14,7 +14,7 @@ if len(sys.argv) == 2:
     except ValueError:
         print("\n%s is not an integer.\n" % sys.argv[1])
         sys.exit(4)
-    if clientNumber >= 1 and clientNumber <= 239:
+    if clientNumber >= 10 and clientNumber <= 200:
         checkNet = ("%s/net-check.sh") % (env_path)
         createVM = ("%s/init-rhel-vm.sh %d") % (env_path, clientNumber)
         os.system(checkNet)
@@ -24,5 +24,5 @@ if len(sys.argv) == 2:
         print("\nOut of range.\n")
         sys.exit(3)
 else:
-    print("\nYou need exactly one argument (an integer between 1 and 239, inclusive) to run this script.\n")
+    print("\nYou need exactly one argument (an integer between 10 and 200, inclusive) to run this script.\n")
     sys.exit(2)

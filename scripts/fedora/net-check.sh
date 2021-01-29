@@ -14,9 +14,9 @@ else cat << EOF > /tmp/${NETWORK_NAME}.xml
       <port start='1024' end='65535'/>
     </nat>
   </forward>
-  <ip address='${NETWORK}.254' netmask='255.255.255.0'>
+  <ip address='${NETWORK}.1' netmask='255.255.255.0'>
     <dhcp>
-      <range start='${NETWORK}.240' end='${NETWORK}.253'/>
+      <range start='${NETWORK}.201' end='${NETWORK}.254'/>
     </dhcp>
   </ip>
 </network>

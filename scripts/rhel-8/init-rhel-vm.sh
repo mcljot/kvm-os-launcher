@@ -19,6 +19,11 @@ if [ -f /root/.ssh/known_hosts ]; then
 	ssh-keygen -R ${NETWORK}.${1}
 fi
 
+if [ -f /home/${USER}/.ssh/known_hosts ]; then
+        ssh-keygen -R ${NAME}
+        ssh-keygen -R ${NETWORK}.${1}
+fi
+
 echo -e "\n"
 
 # Check for needed packages

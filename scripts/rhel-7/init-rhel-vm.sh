@@ -19,6 +19,11 @@ if [ -f /root/.ssh/known_hosts ]; then
 	ssh-keygen -R ${NETWORK}.${1}
 fi
 
+if [ -f /home/${USER}/.ssh/known_hosts ]; then
+        ssh-keygen -R ${NAME}
+        ssh-keygen -R ${NETWORK}.${1}
+fi
+
 echo -e "\n"
 
 # Check for needed packages
@@ -54,8 +59,8 @@ TYPE="Ethernet"
 USERCTL="yes"
 IPADDR="${NETWORK}.${1}"
 NETMASK="255.255.255.0"
-GATEWAY="${NETWORK}.254"
-DNS1="${NETWORK}.254"
+GATEWAY="${NETWORK}.1"
+DNS1="${NETWORK}.1"
 EOF
 
 export LIBGUESTFS_BACKEND=direct

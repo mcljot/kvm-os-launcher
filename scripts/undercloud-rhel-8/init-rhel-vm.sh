@@ -19,6 +19,11 @@ if [ -f /root/.ssh/known_hosts ]; then
 	ssh-keygen -R ${NETWORK}.${1}
 fi
 
+if [ -f /home/${USER}/.ssh/known_hosts ]; then
+	ssh-keygen -R ${NAME}
+	ssh-keygen -R ${NETWORK}.${1}
+fi
+
 echo -e "\n"
 
 # Check for needed packages
@@ -43,7 +48,7 @@ else
 fi
 
 qemu-img create -f qcow2 ${DISK} ${DISK_SIZE}
-virt-resize --expand /dev/sda1 ${TEMPLATE} ${DISK}
+virt-resize --expand /dev/vda3 ${TEMPLATE} ${DISK}
 
 cat > /tmp/ifcfg-eth0 << EOF
 DEVICE="eth0"
@@ -53,8 +58,8 @@ TYPE="Ethernet"
 USERCTL="yes"
 IPADDR="${NETWORK}.${1}"
 NETMASK="255.255.255.0"
-GATEWAY="${NETWORK}.254"
-DNS1="${NETWORK}.254"
+GATEWAY="${NETWORK}.1"
+DNS1="${NETWORK}.1"
 EOF
 
 cat > /tmp/ifcfg-eth1 << EOF
@@ -65,8 +70,8 @@ TYPE="Ethernet"
 USERCTL="yes"
 IPADDR="${NETWORK_2}.${1}"
 NETMASK="255.255.255.0"
-GATEWAY="${NETWORK_2}.254"
-DNS1="${NETWORK_2}.254"
+GATEWAY="${NETWORK_2}.1"
+DNS1="${NETWORK_2}.1"
 EOF
 
 export LIBGUESTFS_BACKEND=direct

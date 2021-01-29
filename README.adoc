@@ -14,10 +14,10 @@ version 0.1
 
 .Procedure
 
-. Run the executable, with root privileges, followed by an integer (1 - 239 inclusive). For example:
+. Run the executable, with root privileges, followed by an integer (10 - 200 inclusive). For example:
 +
 ----
-[rheslop@rsys kvm-os-launcher]$ sudo ./spawn-rhel-7.py 5
+[rheslop@rsys kvm-os-launcher]$ sudo ./spawn-rhel-7.py 15
 ----
 
 Note the following:
